@@ -2,6 +2,7 @@
 
 <video controls width="600">
   <source src="https://github.com/dcruzeneil/fresh-job-scraper/raw/main/assets/demo.mp4" type="video/mp4">
+  Your browser does not support playback
 </video>
 
 A job scraper built using [OnKernel](https://onkernel.com)'s Browser-as-a-Service APIs to scrape jobs from sites like LinkedIn and Indeed. This project creates a persistent remote browser instance per integration. This means you only have to log in once. Each remote browser instance runs Playwright automation, so that you can fetch recent jobs concurrently from multiple job boards without running local browsers.
