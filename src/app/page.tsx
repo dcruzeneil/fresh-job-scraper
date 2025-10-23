@@ -1,103 +1,259 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import { useState } from 'react';
+import Image from 'next/image';
+import { Loader2 } from 'lucide-react';
+import type { JobFilter, JobBoard, Job } from '@/lib/types';
+import KernelLiveView from '@/components/KernelLiveView';
+
+export default function HomePage() {
+  const [filters, setFilters] = useState<JobFilter>({
+    role: '',
+    location: '',
+    timeWindow: 24,
+    yoe: 0,
+    education: '',
+    jobBoards: ['LinkedIn'],
+  });
+
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFilters(prev => ({
+      ...prev,
+      [name]: ['timeWindow', 'yoe'].includes(name) ? Number(value) : value,
+    }));
+  };
+
+  const handleJobBoardToggle = (board: JobBoard) => {
+    setFilters(prev => ({
+      ...prev,
+      jobBoards: prev.jobBoards.includes(board)
+        ? prev.jobBoards.filter(b => b !== board)
+        : [...prev.jobBoards, board],
+    }));
+  };
+
+  const handleSearch = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(filters),
+      });
+
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+
+      if (data.liveViews && Array.isArray(data.liveViews)) {
+        data.liveViews.forEach((lv: { board: string, url: string}) => {
+          if (!lv.url) return;
+          const key = `kernelLiveViewUrl_${lv.board.toLowerCase()}`;
+          localStorage.setItem(key, lv.url);
+        });
+      }
+
+      setJobs(data.jobs);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getAccentColor = (board: string) => {
+    if (board === 'LinkedIn') return 'border-l-blue-500';
+    if (board === 'Indeed') return 'border-l-sky-500';
+    if (board === 'Handshake') return 'border-l-yellow-400';
+    return 'border-l-gray-300';
+  };
+
+  const getLogoSrc = (board: string) => {
+    if (board === 'LinkedIn') return '/logos/linkedin.png';
+    if (board === 'Indeed') return '/logos/indeed.png';
+    if (board === 'Handshake') return '/logos/handshake.png';
+    return '/logos/default.png';
+  };
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <main className="flex min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 text-gray-900">
+      {/* Sidebar */}
+      <aside className="w-[480px] bg-white border-r border-gray-200 shadow-sm p-8 flex flex-col justify-between">
+        <div>
+          <div className="mb-8">
+            <h1 className="text-2xl font-semibold tracking-tight text-gray-900">
+              Job Finder Dashboard
+            </h1>
+            <p className="text-gray-500 text-sm mt-1">
+              Search fresh roles across top job boards - powered by {' '}
+              <a
+                href="https://www.onkernel.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-gray-700"
+              >
+                OnKernel
+              </a>
+            </p>
+          </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          {/* Filters */}
+          <div className="space-y-5">
+            {/* Role + Location */}
+            {[{ label: 'Role', name: 'role', type: 'text', placeholder: 'Software Engineer' },
+              { label: 'Location', name: 'location', type: 'text', placeholder: 'Philadelphia, PA' }].map(field => (
+              <div key={field.name}>
+                <label className="block text-sm font-medium mb-1 text-gray-700">{field.label}</label>
+                <input
+                  type={field.type}
+                  name={field.name}
+                  value={(filters as any)[field.name]}
+                  onChange={handleChange}
+                  placeholder={field.placeholder}
+                  className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                />
+              </div>
+            ))}
+
+            {/* Time Window */}
+            <div>
+              <label className="block text-sm font-medium mb-1 text-gray-700">Time Window</label>
+              <select
+                name="timeWindow"
+                value={filters.timeWindow}
+                onChange={handleChange}
+                className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 focus:ring-2 focus:ring-blue-500 transition"
+              >
+                <option value={1}>Last 1 hour</option>
+                <option value={6}>Last 6 hours</option>
+                <option value={24}>Last 24 hours</option>
+                <option value={48}>Last 48 hours</option>
+              </select>
+            </div>
+
+            {/* YOE */}
+            <div>
+              <label className="block text-sm font-medium mb-1 text-gray-700">Years of Experience</label>
+              <input
+                type="number"
+                name="yoe"
+                value={filters.yoe}
+                onChange={handleChange}
+                placeholder="0"
+                min={0}
+                className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 focus:ring-2 focus:ring-blue-500 transition"
+              />
+            </div>
+
+            {/* Education */}
+            <div>
+              <label className="block text-sm font-medium mb-1 text-gray-700">Education</label>
+              <select
+                name="education"
+                value={filters.education}
+                onChange={handleChange}
+                className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 focus:ring-2 focus:ring-blue-500 transition"
+              >
+                <option value="">Any</option>
+                <option value="Bachelors">Bachelors</option>
+                <option value="Masters">Masters</option>
+                <option value="PhD">PhD</option>
+              </select>
+            </div>
+
+            {/* Job Boards */}
+            <div>
+              <label className="block text-sm font-medium mb-2 text-gray-700">Job Boards</label>
+              <div className="grid grid-cols-2 gap-2">
+                {(['LinkedIn', 'Indeed', 'Handshake'] as JobBoard[]).map(board => (
+                  <label
+                    key={board}
+                    className={`flex items-center space-x-2 rounded-lg border border-gray-200 bg-gray-50 p-2 hover:bg-gray-100 cursor-pointer transition ${
+                      filters.jobBoards.includes(board) ? 'ring-2 ring-blue-400' : ''
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={filters.jobBoards.includes(board)}
+                      onChange={() => handleJobBoardToggle(board)}
+                      className="accent-blue-500 w-4 h-4"
+                    />
+                    <span className="text-sm text-gray-700">{board}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+
+        {/* Search Button */}
+        <button
+          onClick={handleSearch}
+          disabled={loading || !filters.role}
+          className="mt-8 w-full flex items-center justify-center gap-2 rounded-lg bg-blue-600 text-white py-3 text-sm font-medium hover:bg-blue-700 transition disabled:opacity-60"
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+          {loading && <Loader2 className="animate-spin h-4 w-4" />}
+          {loading ? 'Searching…' : 'Search Jobs'}
+        </button>
+
+        {/* Persistent Live Views */}
+        <div className="mt-6 space-y-2">
+          <KernelLiveView board="LinkedIn" />
+          <KernelLiveView board="Indeed" />
+        </div>
+      </aside>
+
+      {/* Results */}
+      <section className="flex-1 p-10 overflow-y-auto">
+        <h2 className="text-2xl font-semibold mb-6 text-gray-900">Search Results</h2>
+        {error && <div className="text-red-600 mb-4">{error}</div>}
+
+        {loading && (
+          <div className="flex items-center justify-center text-gray-500 h-40">
+            <Loader2 className="animate-spin h-6 w-6 mr-2" /> Loading jobs...
+          </div>
+        )}
+
+        {!loading && (
+          <ul className="space-y-4">
+            {jobs.map((job, idx) => (
+              <li
+                key={idx}
+                className={`border-l-4 ${getAccentColor(job.source)} bg-white border border-gray-200 rounded-xl p-5 hover:shadow-md transition`}
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <Image
+                    src={getLogoSrc(job.source)}
+                    alt={job.source}
+                    width={28}
+                    height={28}
+                    className="rounded"
+                  />
+                  <a
+                    href={job.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-lg font-medium text-gray-900 hover:text-blue-700 transition"
+                  >
+                    {job.title}
+                  </a>
+                </div>
+                <p className="text-sm text-gray-600">
+                  {job.company} • {job.location}
+                </p>
+              </li>
+            ))}
+            {!loading && jobs.length === 0 && (
+              <p className="text-gray-500 italic">No jobs found yet. Try adjusting your filters.</p>
+            )}
+          </ul>
+        )}
+      </section>
+    </main>
   );
 }
