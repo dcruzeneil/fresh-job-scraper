@@ -19,6 +19,7 @@ export default function HomePage() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [agenticMode, setAgenticMode] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -41,7 +42,8 @@ export default function HomePage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/search', {
+      const endpoint = agenticMode ? '/api/agent-search' : '/api/search';
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(filters),
@@ -104,6 +106,14 @@ export default function HomePage() {
 
           {/* Filters */}
           <div className="space-y-5">
+            {/* Agentic Mode Toggle */}
+            <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-3">
+              <span className="text-sm font-medium text-gray-700">Agentic Mode (Stagehand)</span>
+              <label className="inline-flex items-center cursor-pointer">
+                <input type="checkbox" className="sr-only peer" checked={agenticMode} onChange={() => setAgenticMode(v => !v)} />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 relative" />
+              </label>
+            </div>
             {/* Role + Location */}
             {[{ label: 'Role', name: 'role', type: 'text', placeholder: 'Software Engineer' },
               { label: 'Location', name: 'location', type: 'text', placeholder: 'Philadelphia, PA' }].map(field => (
