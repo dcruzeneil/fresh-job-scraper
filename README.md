@@ -42,4 +42,4 @@ echo "OPENAI_API_KEY=your_api_key_here" >> .env.local
 npm run dev
 ```
 
-**Note:** to create an account and obtain an API key (there is also a free-tier), you can visit [OnKernel](https://onkernel.com/) and create an account.
+**Note:** to create an account and obtain an API key (there is also a free-tier), you can visit [Kernel](https://onkernel.com/) and create an account.
