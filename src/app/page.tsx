@@ -92,14 +92,14 @@ export default function HomePage() {
               Job Finder
             </h1>
             <p className="text-sm text-slate-500 leading-relaxed">
-              Search fresh roles across top job boards — powered by {' '}
+              Search fresh roles across top job boards - powered by {' '}
               <a
                 href="https://www.onkernel.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-slate-700 hover:text-slate-900 font-medium underline underline-offset-2 transition-colors"
               >
-                OnKernel
+                Kernel
               </a>
             </p>
           </div>
