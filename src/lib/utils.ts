@@ -57,3 +57,17 @@ export function buildIndeedSearchURL(filters: JobFilter): string {
 
   return base.toString();
 }
+
+export function agentStepInstructions(filters: JobFilter): string[] {
+  const role = filters.role?.trim() || "";
+  const location = filters.location?.trim() || "";
+
+  const steps: string[] = [
+    `click the input labeled 'Job title, keywords, or company', type "${role}"`,
+    `click the input labeled 'Where' or 'Location', type "${location}"`,
+    `click the button labeled 'Find jobs' or press Enter in the job title input`,
+    `click 'Apply' or close the 'Date posted' panel`,
+  ];
+
+  return steps;
+}
