@@ -1,6 +1,6 @@
 ## Kernel-based Fresh Job Scraper
 
-A job scraper built using [Kernel](https://onkernel.com)'s Browser-as-a-Service APIs to scrape jobs from sites like LinkedIn and Indeed. This project creates a persistent remote browser instance per integration. This means you only have to log in once. Each remote browser instance runs Playwright automation, so that you can fetch recent jobs concurrently from multiple job boards without running local browsers.
+A job scraper built using [Kernel](https://onkernel.com)'s Browser-as-a-Service APIs to scrape jobs from sites like LinkedIn and Indeed. This project creates a persistent remote browser instance per integration. This means you only have to log in once. Each remote browser instance runs Playwright automation (or Stagehand automation), so that you can fetch recent jobs concurrently from multiple job boards without running local browsers.
 
 ## 🎥 Watch Demo
 <p align="center">
