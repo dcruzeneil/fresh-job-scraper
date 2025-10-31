@@ -1,5 +1,5 @@
 import { chromium } from "playwright-core";
-import { kernelClient } from "@/lib/intializations";
+import { kernelClient } from "@/lib/initializations";
 
 export async function getKernelBrowser(persistenceId : string) {
     const client = kernelClient();
