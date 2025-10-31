@@ -70,9 +70,9 @@ export default function HomePage() {
 
   const getAccentColor = (board: string) => {
     if (board === 'LinkedIn') return 'border-l-blue-500';
-    if (board === 'Indeed') return 'border-l-sky-500';
-    if (board === 'Handshake') return 'border-l-yellow-400';
-    return 'border-l-gray-300';
+    if (board === 'Indeed') return 'border-l-cyan-500';
+    if (board === 'Handshake') return 'border-l-amber-500';
+    return 'border-l-slate-300';
   };
 
   const getLogoSrc = (board: string) => {
@@ -83,21 +83,21 @@ export default function HomePage() {
   };
 
   return (
-    <main className="flex min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 text-gray-900">
+    <main className="flex min-h-screen bg-slate-50 text-slate-900 antialiased">
       {/* Sidebar */}
-      <aside className="w-[480px] bg-white border-r border-gray-200 shadow-sm p-8 flex flex-col justify-between">
+      <aside className="w-[400px] bg-white border-r border-slate-200 p-8 flex flex-col justify-between">
         <div>
-          <div className="mb-8">
-            <h1 className="text-2xl font-semibold tracking-tight text-gray-900">
-              Job Finder Dashboard
+          <div className="mb-10 pb-8 border-b border-slate-100">
+            <h1 className="text-3xl font-semibold tracking-tight text-slate-900 mb-2">
+              Job Finder
             </h1>
-            <p className="text-gray-500 text-sm mt-1">
-              Search fresh roles across top job boards - powered by {' '}
+            <p className="text-sm text-slate-500 leading-relaxed">
+              Search fresh roles across top job boards — powered by {' '}
               <a
                 href="https://www.onkernel.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="underline hover:text-gray-700"
+                className="text-slate-700 hover:text-slate-900 font-medium underline underline-offset-2 transition-colors"
               >
                 OnKernel
               </a>
@@ -105,39 +105,40 @@ export default function HomePage() {
           </div>
 
           {/* Filters */}
-          <div className="space-y-5">
+          <div className="space-y-6">
             {/* Agentic Mode Toggle */}
-            <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-3">
-              <span className="text-sm font-medium text-gray-700">Agentic Mode (Stagehand)</span>
+            <div className="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 p-3.5 hover:bg-slate-100 transition-colors">
+              <span className="text-sm font-medium text-slate-700">Agentic Mode (Stagehand)</span>
               <label className="inline-flex items-center cursor-pointer">
                 <input type="checkbox" className="sr-only peer" checked={agenticMode} onChange={() => setAgenticMode(v => !v)} />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 relative" />
+                <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-slate-900 relative" />
               </label>
             </div>
+            
             {/* Role + Location */}
             {[{ label: 'Role', name: 'role', type: 'text', placeholder: 'Software Engineer' },
               { label: 'Location', name: 'location', type: 'text', placeholder: 'Philadelphia, PA' }].map(field => (
               <div key={field.name}>
-                <label className="block text-sm font-medium mb-1 text-gray-700">{field.label}</label>
+                <label className="block text-xs font-medium mb-2 text-slate-600 uppercase tracking-wide">{field.label}</label>
                 <input
                   type={field.type}
                   name={field.name}
                   value={(filters as any)[field.name]}
                   onChange={handleChange}
                   placeholder={field.placeholder}
-                  className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                  className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900 transition-all"
                 />
               </div>
             ))}
 
             {/* Time Window */}
             <div>
-              <label className="block text-sm font-medium mb-1 text-gray-700">Time Window</label>
+              <label className="block text-xs font-medium mb-2 text-slate-600 uppercase tracking-wide">Time Window</label>
               <select
                 name="timeWindow"
                 value={filters.timeWindow}
                 onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 focus:ring-2 focus:ring-blue-500 transition"
+                className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900 transition-all cursor-pointer"
               >
                 <option value={1}>Last 1 hour</option>
                 <option value={6}>Last 6 hours</option>
@@ -148,7 +149,7 @@ export default function HomePage() {
 
             {/* YOE */}
             <div>
-              <label className="block text-sm font-medium mb-1 text-gray-700">Years of Experience</label>
+              <label className="block text-xs font-medium mb-2 text-slate-600 uppercase tracking-wide">Years of Experience</label>
               <input
                 type="number"
                 name="yoe"
@@ -156,18 +157,18 @@ export default function HomePage() {
                 onChange={handleChange}
                 placeholder="0"
                 min={0}
-                className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 focus:ring-2 focus:ring-blue-500 transition"
+                className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900 transition-all"
               />
             </div>
 
             {/* Education */}
             <div>
-              <label className="block text-sm font-medium mb-1 text-gray-700">Education</label>
+              <label className="block text-xs font-medium mb-2 text-slate-600 uppercase tracking-wide">Education</label>
               <select
                 name="education"
                 value={filters.education}
                 onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 focus:ring-2 focus:ring-blue-500 transition"
+                className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900 transition-all cursor-pointer"
               >
                 <option value="">Any</option>
                 <option value="Bachelors">Bachelors</option>
@@ -178,22 +179,24 @@ export default function HomePage() {
 
             {/* Job Boards */}
             <div>
-              <label className="block text-sm font-medium mb-2 text-gray-700">Job Boards</label>
-              <div className="grid grid-cols-2 gap-2">
+              <label className="block text-xs font-medium mb-2.5 text-slate-600 uppercase tracking-wide">Job Boards</label>
+              <div className="grid grid-cols-3 gap-2">
                 {(['LinkedIn', 'Indeed', 'Handshake'] as JobBoard[]).map(board => (
                   <label
                     key={board}
-                    className={`flex items-center space-x-2 rounded-lg border border-gray-200 bg-gray-50 p-2 hover:bg-gray-100 cursor-pointer transition ${
-                      filters.jobBoards.includes(board) ? 'ring-2 ring-blue-400' : ''
+                    className={`flex items-center justify-center rounded-lg border transition-all cursor-pointer px-3 py-2.5 ${
+                      filters.jobBoards.includes(board)
+                        ? 'border-slate-900 bg-slate-900 text-white'
+                        : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300'
                     }`}
                   >
                     <input
                       type="checkbox"
                       checked={filters.jobBoards.includes(board)}
                       onChange={() => handleJobBoardToggle(board)}
-                      className="accent-blue-500 w-4 h-4"
+                      className="sr-only"
                     />
-                    <span className="text-sm text-gray-700">{board}</span>
+                    <span className="text-xs font-medium">{board}</span>
                   </label>
                 ))}
               </div>
@@ -201,68 +204,91 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Search Button */}
-        <button
-          onClick={handleSearch}
-          disabled={loading || !filters.role}
-          className="mt-8 w-full flex items-center justify-center gap-2 rounded-lg bg-blue-600 text-white py-3 text-sm font-medium hover:bg-blue-700 transition disabled:opacity-60"
-        >
-          {loading && <Loader2 className="animate-spin h-4 w-4" />}
-          {loading ? 'Searching…' : 'Search Jobs'}
-        </button>
+        <div>
+          {/* Search Button */}
+          <button
+            onClick={handleSearch}
+            disabled={loading || !filters.role}
+            className="w-full flex items-center justify-center gap-2 rounded-lg bg-slate-900 text-white py-3 px-4 text-sm font-medium hover:bg-slate-800 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            {loading && <Loader2 className="animate-spin h-4 w-4" />}
+            {loading ? 'Searching…' : 'Search Jobs'}
+          </button>
 
-        {/* Persistent Live Views */}
-        <div className="mt-6 space-y-2">
-          <KernelLiveView board="LinkedIn" />
-          <KernelLiveView board="Indeed" />
+          {/* Persistent Live Views */}
+          <div className="mt-6 space-y-2">
+            <KernelLiveView board="LinkedIn" />
+            <KernelLiveView board="Indeed" />
+          </div>
         </div>
       </aside>
 
       {/* Results */}
-      <section className="flex-1 p-10 overflow-y-auto">
-        <h2 className="text-2xl font-semibold mb-6 text-gray-900">Search Results</h2>
-        {error && <div className="text-red-600 mb-4">{error}</div>}
-
-        {loading && (
-          <div className="flex items-center justify-center text-gray-500 h-40">
-            <Loader2 className="animate-spin h-6 w-6 mr-2" /> Loading jobs...
-          </div>
-        )}
-
-        {!loading && (
-          <ul className="space-y-4">
-            {jobs.map((job, idx) => (
-              <li
-                key={idx}
-                className={`border-l-4 ${getAccentColor(job.source)} bg-white border border-gray-200 rounded-xl p-5 hover:shadow-md transition`}
-              >
-                <div className="flex items-center gap-3 mb-2">
-                  <Image
-                    src={getLogoSrc(job.source)}
-                    alt={job.source}
-                    width={28}
-                    height={28}
-                    className="rounded"
-                  />
-                  <a
-                    href={job.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-lg font-medium text-gray-900 hover:text-blue-700 transition"
-                  >
-                    {job.title}
-                  </a>
-                </div>
-                <p className="text-sm text-gray-600">
-                  {job.company} • {job.location}
-                </p>
-              </li>
-            ))}
-            {!loading && jobs.length === 0 && (
-              <p className="text-gray-500 italic">No jobs found yet. Try adjusting your filters.</p>
+      <section className="flex-1 overflow-y-auto">
+        <div className="max-w-4xl mx-auto p-10">
+          <div className="mb-8">
+            <h2 className="text-2xl font-semibold text-slate-900 mb-1">Search Results</h2>
+            {jobs.length > 0 && (
+              <p className="text-sm text-slate-500 font-medium">
+                {jobs.length} {jobs.length === 1 ? 'job' : 'jobs'} found
+              </p>
             )}
-          </ul>
-        )}
+          </div>
+          
+          {error && (
+            <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {error}
+            </div>
+          )}
+
+          {loading && (
+            <div className="flex items-center justify-center text-slate-500 h-64">
+              <Loader2 className="animate-spin h-5 w-5 mr-3" />
+              <span className="text-sm">Loading jobs...</span>
+            </div>
+          )}
+
+          {!loading && (
+            <ul className="space-y-3">
+              {jobs.map((job, idx) => (
+                <li
+                  key={idx}
+                  className={`border-l-[3px] ${getAccentColor(job.source)} bg-white border border-slate-200 rounded-lg p-5 hover:shadow-sm hover:border-slate-300 transition-all group`}
+                >
+                  <div className="flex items-start gap-3.5 mb-2.5">
+                    <div className="flex-shrink-0 mt-0.5">
+                      <Image
+                        src={getLogoSrc(job.source)}
+                        alt={job.source}
+                        width={24}
+                        height={24}
+                        className="rounded"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <a
+                        href={job.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-base font-semibold text-slate-900 hover:text-slate-700 transition-colors block truncate"
+                      >
+                        {job.title}
+                      </a>
+                      <p className="text-sm text-slate-500 mt-1">
+                        {job.company} <span className="text-slate-400">•</span> {job.location}
+                      </p>
+                    </div>
+                  </div>
+                </li>
+              ))}
+              {!loading && jobs.length === 0 && (
+                <div className="text-center py-16">
+                  <p className="text-slate-400 text-sm">No jobs found yet. Try adjusting your filters.</p>
+                </div>
+              )}
+            </ul>
+          )}
+        </div>
       </section>
     </main>
   );

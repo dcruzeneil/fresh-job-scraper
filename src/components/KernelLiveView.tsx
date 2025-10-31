@@ -33,18 +33,18 @@ export default function KernelLiveView( { board } : Props) {
     if (!url) return null;
 
     return (
-        <div className="flex items-center justify-between mt-4 border-t pt-3">
+        <div className="flex items-center justify-between pt-4 border-t border-slate-200">
             <a
                 href={url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 font-medium"
+                className="flex items-center gap-2 text-xs text-slate-600 hover:text-slate-900 font-medium transition-colors"
             >
-                <Monitor className="size-4" />
+                <Monitor className="w-3.5 h-3.5" />
                 {board} Live View
             </a>
-            <span className={`flex items-center gap-1 text-xs ${isActive ? 'text-green-600' : 'text-gray-500'}`}>
-                <Circle className={`w-2 h-2 ${isActive ? 'fill-green-600' : 'fill-gray-400'}`} />
+            <span className={`flex items-center gap-1.5 text-xs font-medium ${isActive ? 'text-emerald-600' : 'text-slate-400'}`}>
+                <Circle className={`w-1.5 h-1.5 ${isActive ? 'fill-emerald-500' : 'fill-slate-300'}`} />
                 {isActive ? 'Active' : 'Idle'}
             </span>
         </div>
